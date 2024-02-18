@@ -9,7 +9,6 @@
     Record: Клас для зберігання інформації про контакт, включаючи ім'я та список телефонів.
     AddressBook: Клас для зберігання та управління записами.
 
-
     Функціональність:
 
     AddressBook:Додавання записів.
@@ -82,12 +81,17 @@ class AddressBook(UserDict):
 
     def find(self, name: str) -> Record:
         """Find a record in the address book by name."""
-        return self.data.get(name, f"The name '{name}' doesn't exist.")
+        if name not in self.data:
+            raise ValueError(f"The name '{name}' doesn't exist.")
+        return self.data.get(name)
     
     def delete(self, name: str) -> Record:
         """Delete a record from the address book by name."""
-        return self.data.pop(name, f"There is no such name as '{name}' in the address book.")
-      
+        if name not in self.data:
+            raise ValueError(f"There is no such name as '{name}' in the address book.")        
+        del self.data[name]
+        print(f"The name '{name}' was deleted.")
+    
 # Створення нової адресної книги
 book = AddressBook()
 
@@ -119,10 +123,7 @@ found_phone = john.find_phone("5555555555")
 print(f"{john.name}: {found_phone}")  # Виведення: 5555555555
 
 # Видалення записів
-deleted_jane = book.delete("Jane")
-does_not_exist = book.delete("Jack")
-print(deleted_jane)
-print(does_not_exist)
+book.delete("Jane")
 
 # Виведення всіх записів у книзі
 for name, record in book.data.items():
